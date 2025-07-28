@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SigmaVivid NFT Mint</title>
+</head>
+<body>
+  <h1>Mint Your SigmaVivid NFT</h1>
+  <button id="mintBtn">Mint NFT</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script>
+    const contractAddress = "YOUR_DEPLOYED_CONTRACT_ADDRESS";
+    const abi = [ // Truncated ABI
+      "function mint() public",
+      "function requiredTokenBalance() public view returns (uint256)"
+    ];
+
+    document.getElementById('mintBtn').onclick = async () => {
+      if (typeof window.ethereum === 'undefined') {
+        alert("Please install MetaMask");
+        return;
+      }
+
+      await ethereum.request({ method: 'eth_requestAccounts' });
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(contractAddress, abi, signer);
+
+      try {
+        const tx = await contract.mint();
+        await tx.wait();
+        alert("NFT Minted!");
+      } catch (err) {
+        console.error(err);
+        alert("Mint failed. Do you have enough NCELBI2?");
+      }
+    };
+  </script>
+</body>
+</html>
